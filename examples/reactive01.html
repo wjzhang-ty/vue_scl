@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>验证reactive系列功能</title>
+</head>
+<body>
+    <h1>验证reactive系列功能</h1>
+    <script src="../packages/reactivity/dist/reactivity.global.js"></script>
+    <script>
+        const {reactive,readonly,shallowReactive,shallowReadonly} = VueReactivity
+
+        let val1 = reactive({name:'wj',favorite:{eat:5,sleep:6}}) 
+        let val2 = readonly({name:'wj',favorite:{eat:5,sleep:6}}) 
+        let val3 = shallowReactive({name:'wj',favorite:{eat:5,sleep:6}}) 
+        let val4 = shallowReadonly({name:'wj',favorite:{eat:5,sleep:6}}) 
+
+
+    </script>
+</body>
+</html>
