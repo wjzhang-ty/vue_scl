@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>验证effct系列功能</title>
+</head>
+<body>
+    <h1>验证effct系列功能</h1>
+    <div id="show"></div>
+    <script src="../packages/reactivity/dist/reactivity.global.js"></script>
+    <script>
+        const {reactive,effect} = VueReactivity
+
+        let val = reactive({name:'wj1',favorite:{eat:5,sleep:6},arr:[1,2,3]}) 
+
+        effect(()=>{
+            document.getElementById("show").innerHTML=val.name+" ARR: "+val.arr+" OBJ: "+val.favorite.eat+"_and_"+val.favorite.jump
+        })
+
+        setTimeout(()=>{
+            val.name='mj'
+            val.arr.length=1
+            val.arr[0]=999
+            val.favorite.eat=70
+            val.favorite.jump=87
+        },1000)
+        setTimeout(()=>{
+            val.arr[10]=4
+            val.arr.length=20
+        },2000)
+
+    </script>
+</body>
+</html>

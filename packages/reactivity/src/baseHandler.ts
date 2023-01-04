@@ -1,4 +1,6 @@
-import { isObject } from "@vue/shared"
+import { hasChange, hasOwn, isArray, isIntegerKey, isObject } from "@vue/shared"
+import { Track, trigger } from "./effect"
+import { TrackOpType, TriggerOpTypes } from "./operations"
 import { reactive, readonly } from "./reactive"
 
 export const reactiveHandlers ={
@@ -30,15 +32,25 @@ export const shallowReadonlyHandlers ={
  */
 function createSetter(isShallow=false){
     return function set(target,key,value,receiver){
-        console.log('set',key)
-        if(isShallow){
-            return Reflect.set(target,key,value,receiver)
+        const oldValue = target[key]
+
+        // 深代理
+        // const res = Reflect.get(target,key,receiver)
+        // if(!isShallow && isObject(res)){
+        //     return reactive(res)
+        // }
+
+        // 
+        const result = Reflect.set(target,key,value,receiver)
+        // 判断属性key是新增还是修改
+        let haskey = isArray(target)&&isIntegerKey(key)?Number(key)<target.length:hasOwn(target,key)
+        if(!haskey){ // 新增key
+            trigger(target,TriggerOpTypes.ADD,key,value)
         }
-        const res = Reflect.get(target,key,receiver)
-        if(isObject(res)){
-            return reactive(res)
+        else if(hasChange(value,oldValue)){ // 无修改
+            trigger(target,TriggerOpTypes.ADD,key,value,oldValue)
         }
-        return Reflect.set(target,key,value,receiver)
+        return result
     }
 }
 
@@ -52,8 +64,9 @@ function createGetter(isReadonly=false,isShallow=false){
     return function get(target,key,receiver){
         const res = Reflect.get(target,key,receiver)
         
+        // 收集依赖
         if(!isReadonly){
-
+            Track(target,TrackOpType.GET,key)
         }
 
         // proxy默认浅层代理

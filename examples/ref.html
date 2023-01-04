@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>验证ref系列功能</title>
+</head>
+<body>
+    <h1>验证ref系列功能</h1>
+    <div id="baseDom"></div>
+    <div id="objDom">objDom初始化</div>
+    <div id="reactDom">reactDom初始化</div>
+    <div id="toRefsDom">toRefsDom初始化</div>
+    <script src="../packages/reactivity/dist/reactivity.global.js"></script>
+    <script>
+        const {effect,ref,toRef,toRefs,reactive} = VueReactivity
+
+        // ref案例
+        let val = ref('wjzhang') 
+        effect(()=>{
+            document.getElementById("baseDom").innerHTML=val.value
+        })
+        setTimeout(()=>{
+            val.value='mj00'
+        },1000)
+        setTimeout(()=>{
+            val.value='ref可以响应式'
+        },3000)
+
+
+        // toRef案例
+        let normalObj = {a:1}
+        let normalObjToRef = toRef(normalObj,'a')
+        effect(()=>{
+            document.getElementById("objDom").innerHTML=normalObjToRef.value
+        })
+        setTimeout(()=>{
+            normalObjToRef.value='toRef:普通对象无法响应式'
+        },1000)
+
+        let reactiveObj = reactive({name:'wj'})
+        let name = toRef(reactiveObj,'name')
+        effect(()=>{
+            document.getElementById("reactDom").innerHTML=name.value
+        })
+        setTimeout(()=>{
+            name.value='reactive对象转toRef可以响应式'
+        },1000)
+        
+
+        // toRefs案例
+        let obj1 = reactive({favorate:'mj',age:18})
+        let arr1 = reactive([1,2,3])
+        let {favorate,age} = toRefs(obj1)
+        let ref_arr = toRefs(arr1)
+        effect(()=>{
+            document.getElementById("toRefsDom").innerHTML=favorate.value+" | "+age.value+" | "+ref_arr
+        })
+        setTimeout(()=>{
+            favorate.value='toRefs object success'
+            age.value = 99
+            ref_arr[5]=9
+        },1000)
+
+
+
+    </script>
+</body>
+</html>
