@@ -21,7 +21,7 @@ export interface ReactiveEffectOptions {
  * @param options 配置项
  */
 export function effect(fn, options:ReactiveEffectOptions){
-    const effect = createReactEffect(fn, options)
+    const effect = createReactEffect(fn, options={})
     if(!options.lazy){
         effect()
     }
@@ -88,7 +88,6 @@ export function Track(target, type, key){
 
     if(!tempKey.has(activeEffect)) tempKey.add(activeEffect)
     
-    // console.log(targetMap)
 }
 
 /**

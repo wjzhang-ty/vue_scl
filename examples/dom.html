@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">1000</div>
+    <script src="../packages/runtime-dom/dist/runtime-dom.global.js"></script>
+    <script>
+        const {createApp,h,reactive} = VueRuntimeDom
+        let App={
+            setup(props,context){
+                let man =reactive({name:'wj1',flag:false,favorite:{eat:5,sleep:6},arr:[1,2,3]})
+                const fn = ()=>{
+                    man.name='mj'
+                    console.log(man)
+                }
+                setTimeout(()=>{
+                    console.log('延迟更新')
+                    man.flag=true
+                },2000)
+                return{
+                    man,
+                    fn
+                }
+                // return ()=>{
+                //     return h('div',{style:{'color':'red'},onClick:fn},[man.name,h('div',{style:{'color':'blue'}},'儿子')])
+                // }
+            },
+            render(proxy){
+                if(proxy.man.flag){
+                    return h('div',{style:{'color':'red',height:"100px"},onClick:proxy.fn},[
+                        h('div',{key:'A',style:{'color':'blue'}},'A'),
+                        h('div',{key:'B',style:{'color':'blue'}},'B'),
+                        h('div',{key:'G',style:{'color':'blue'}},'G'),
+                        h('div',{key:'D',style:{'color':'blue'}},'D'),
+                        h('div',{key:'E',style:{'color':'blue'}},'E'),
+                        h('div',{key:'C',style:{'color':'blue'}},'C'),
+                        h('div',{key:'F',style:{'color':'blue'}},'F'),
+                    ])
+                }
+                else{
+                    return h('div',{style:{'color':'blue'},onClick:proxy.fn},[
+                        h('div',{key:'A',style:{'color':'blue'}},'A'),
+                        h('div',{key:'B',style:{'color':'blue'}},'B'),
+                        h('div',{key:'C',style:{'color':'blue'}},'C'),
+                        h('div',{key:'D',style:{'color':'blue'}},'D'),
+                        h('div',{key:'E',style:{'color':'blue'}},'E'),
+                        h('div',{key:'F',style:{'color':'blue'}},'F'),
+                    ])
+                    
+                }
+            }
+        }
+        createApp(App,{name:'wj',age:10}).mount("#app")
+    </script>
+</body>
+</html>
