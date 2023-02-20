@@ -1,3 +1,4 @@
+// Dom的类型，二进制&运算>1说明属于该类型（完美兼容多类别）
 export const enum ShapeFlags {
   ELEMENT = 1,
   FUNCTIONAL_COMPONENT = 1 << 1,

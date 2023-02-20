@@ -2,6 +2,7 @@ import { effect } from "@vue/reactivity"
 import { ShapeFlags } from "@vue/shared/src/shapeFlags"
 import { patchProps } from "packages/runtime-dom/src/patchProp"
 import { apiCreateApp } from "./apiCreateApp"
+import { invokeArrayFns } from "./apiLifecycle"
 import { createComponentInstance, setupComponent } from "./components"
 import { CVnode, isSameVnode, TEXT } from "./vnode"
 
@@ -33,17 +34,31 @@ export function createRender(renderOptionDom) {
     function setupRenderEffect(instance,container){
         effect(function componentEffect(){
             let proxy = instance.proxy
+            // 渲染
             if(!instance.isMounted){
-                let subTree = instance.subTree = instance.render.call(proxy,proxy)
+                // 生命周期
+                let {bm,m}=instance
+                if(bm) invokeArrayFns(bm)
+
                 // 渲染子树
+                let subTree = instance.subTree = instance.render.call(proxy,proxy)
                 patch(null,subTree,container)
+
+                if(m) invokeArrayFns(m)
+
                 instance.isMounted=true
             }
+            // 更新
             else{
+                // 生命周期
+                let {u,bu}=instance
+                if(bu) invokeArrayFns(bu)
+                
                 const prevTree = instance.subTree
                 const nextTree = instance.render.call(proxy,proxy)
                 instance.subTree = nextTree
                 patch(prevTree,nextTree,container)
+                if(u) invokeArrayFns(u)
             }
         },{})
     }

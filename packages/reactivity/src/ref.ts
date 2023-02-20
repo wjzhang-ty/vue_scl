@@ -1,4 +1,4 @@
-import { hasChange } from "@vue/shared"
+import { hasChanged } from "@vue/shared"
 import { Track, trigger } from "./effect"
 import { TrackOpType, TriggerOpTypes } from "./operations"
 
@@ -36,7 +36,7 @@ class RefImpl{
         return this._value
     }
     set value(newValue){
-        if(hasChange(newValue,this._value)){
+        if(hasChanged(newValue,this._value)){
             this._value = newValue
             trigger(this,TriggerOpTypes.SET,'value',newValue)
         }

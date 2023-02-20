@@ -2,6 +2,14 @@ import { isFunction, isObject } from "@vue/shared"
 import { ShapeFlags } from "packages/shared/src/shapeFlags"
 import { componentPublicInstance } from "./componentPublicInstance"
 
+// 获取当前实例
+export const getCurrentInstance = ()=>{
+    return currentInstance
+}
+export const setCurrentInstance = (target)=>{
+    currentInstance=target
+}
+
 /**
  * 创建组件实例
  * @param vnode 
@@ -40,6 +48,7 @@ export const setupComponent = (instance) => {
 
 }
 
+export let currentInstance
 /**
  * 处理组件内部setup函数
  * @param instance 
@@ -49,9 +58,11 @@ export const setupStateComponent = (instance) => {
     let Component = instance.type
     let {setup} = Component
     if(setup){   
+        currentInstance = instance // 创建全局实例
         let setupContext = createContext(instance)
         // setup返回对象（正常值）和函数（当render函数）
         let res = setup(instance.props,setupContext)
+        currentInstance=null
         handlerSetupResult(instance,res)
     }
     else{
